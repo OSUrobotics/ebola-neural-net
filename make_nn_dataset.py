@@ -68,6 +68,6 @@ if __name__ == "__main__":
 
         for i in trange(h, position=1):
             for j in range(w):
-                if p[i][j] >= 254:# and output_data[i][j] != 0:
+                if p[i][j] >= 254 and output_data[i][j] != 0:
                     indata.writerow(get_input_data(p, i, j, kernel_size, h, w))
                     outdata.writerow([output_data[i][j]])
