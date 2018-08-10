@@ -26,7 +26,11 @@ def get_input_data(p, i, j, kernel_size, h, w):
     return data
 
 if __name__ == "__main__":
+<<<<<<< HEAD
     path = getcw() + '/'
+=======
+    path = getcwd() + '/'
+>>>>>>> cbccb66f14d7207533a7097438805f2ab864cd27
 
     open('indata.csv', 'w')
     indata = csv.writer(open('indata.csv', 'a'))
