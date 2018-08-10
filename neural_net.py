@@ -22,12 +22,16 @@ indataset = inframe.values
 outframe = pandas.read_csv("outdata.csv", header=None)
 outdataset = outframe.values
 
-
+print("done loading csv")
 # define base model
 def baseline_model():
 	# create model
 	model = Sequential()
-	model.add(Dense(900, input_dim=900, kernel_initializer='normal', activation='relu'))
+	model.add(Dense(45, input_dim=900, kernel_initializer='normal', activation='relu'))
+	model.add(Dense(45, kernel_initializer='normal', activation='relu'))
+	model.add(Dense(30, kernel_initializer='normal', activation='relu'))
+	model.add(Dense(15, kernel_initializer='normal', activation='relu'))
+	model.add(Dense(5, kernel_initializer='normal', activation='relu'))
 	model.add(Dense(1, kernel_initializer='normal'))
 	# Compile model
 	model.compile(loss='mean_squared_error', optimizer='adam')
@@ -38,8 +42,9 @@ def baseline_model():
 seed = 7
 numpy.random.seed(seed)
 # evaluate model with standardized dataset
-estimator = KerasRegressor(build_fn=baseline_model, epochs=100, batch_size=5, verbose=0)
+estimator = KerasRegressor(build_fn=baseline_model, epochs=10, batch_size=64, verbose=0)
 
 kfold = KFold(n_splits=10, random_state=seed)
 results = cross_val_score(estimator, indataset, outdataset, cv=kfold)
+print(results)
 print("Results: %.2f (%.2f) MSE" % (results.mean(), results.std()))

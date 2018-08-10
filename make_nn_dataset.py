@@ -4,6 +4,7 @@ import numpy as np
 from PIL import Image
 from tqdm import tqdm, trange
 import argparse, glob, csv
+from os import getcwd
 
 def get_input_data(p, i, j, kernel_size, h, w):
     min_i = int(i-(kernel_size-1)/2)
@@ -25,8 +26,7 @@ def get_input_data(p, i, j, kernel_size, h, w):
     return data
 
 if __name__ == "__main__":
-    # path = '/home/sage/Desktop/ebola_final/'
-    # path = '/home/sage/Downloads/'
+    path = getcw() + '/'
 
     open('indata.csv', 'w')
     indata = csv.writer(open('indata.csv', 'a'))
@@ -35,9 +35,9 @@ if __name__ == "__main__":
     outdata = csv.writer(open('outdata.csv', 'a'))
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-i', action='store',default='/home/sage/Desktop/nn_ebola/in_sage/',
+    parser.add_argument('-i', action='store',default=path+'in_sage/',
                         dest='inpath', help="set the input data folder")
-    parser.add_argument('-o', action='store', default='/home/sage/Desktop/nn_ebola/out_sage/',
+    parser.add_argument('-o', action='store', default=path+'out_sage/',
                         dest='outpath', help="set the output data folder")
 
     results = parser.parse_args()
@@ -50,7 +50,7 @@ if __name__ == "__main__":
     #get ordered lists of files
     infiles = sorted(glob.glob(inpath + '*'))
     outfiles = sorted(glob.glob(outpath + '*'))
-
+    print(infiles)
     assert len(infiles) == len(outfiles), "Mismatched number of files"
 
     for i in trange(len(infiles), position=0):

@@ -39,7 +39,7 @@ def interpolate_data(last_pt, pt, res, origin, num_pts):
     return list(zip(x.astype(int), y))
 
 if __name__ == "__main__":
-    path = '/home/sage/Desktop/ebola_final/'
+    path = '/home/vilya/Desktop/ebola_final/'
     data_path = path + 'etu_1_condensed/'
 
     step = 1
@@ -55,8 +55,10 @@ if __name__ == "__main__":
     im_h = int(h/step)
     im = np.zeros((im_w, im_h), dtype=int)
 
+
     files = glob.glob(data_path + '*.p')
 
+    tqdm.write("Generating variance data")
     #Generate heatmap
     for file in tqdm(files, position = 0):
         dataset = pickle.load(open(file, 'rb'))
