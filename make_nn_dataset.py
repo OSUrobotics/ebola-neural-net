@@ -14,25 +14,26 @@ def get_input_data(p, i, j, kernel_size, h, w):
 
     data = []
     for k in range(min_i, max_i):
+        data.append([])
         for l in range(min_j, max_j):
             # if k != i and l != j:
             if k<0 or l<0 or k>=h or l>=w:
-                data.append(1)
+                data[k-min_i].append(1)
             elif p[k][l] >= 254:
-                data.append(0)
+                data[k-min_i].append(0)
             else:
-                data.append(1)
+                data[k-min_i].append(1)
 
-    return data
+    return np.array(data)
 
 if __name__ == "__main__":
-    path = getcw() + '/'
+    path = getcwd() + '/'
 
-    open('indata.csv', 'w')
-    indata = csv.writer(open('indata.csv', 'a'))
-
-    open('outdata.csv', 'w')
-    outdata = csv.writer(open('outdata.csv', 'a'))
+    # open('indata.csv', 'w')
+    # indata = csv.writer(open('indata.csv', 'a'))
+    #
+    # open('outdata.csv', 'w')
+    # outdata = csv.writer(open('outdata.csv', 'a'))
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', action='store',default=path+'in_sage/',
@@ -69,5 +70,10 @@ if __name__ == "__main__":
         for i in trange(h, position=1):
             for j in range(w):
                 if p[i][j] >= 254 and output_data[i][j] != 0:
-                    indata.writerow(get_input_data(p, i, j, kernel_size, h, w))
-                    outdata.writerow([output_data[i][j]])
+                    input_data.append(get_input_data(p, i, j, kernel_size, h, w))
+                    output_list.append(output_data[i][j])
+                    # indata.writerow(get_input_data(p, i, j, kernel_size, h, w))
+                    # outdata.writerow([output_data[i][j]])
+
+    np.save("indata",np.array(input_data))
+    np.save("outdata", np.array(output_list))

@@ -13,6 +13,7 @@ from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import KFold
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
+import matplotlib.pylab as plt
 
 # class AccuracyHistory(keras.callbacks.Callback):
 # 	def on_train_begin(self, logs={}):
@@ -28,7 +29,8 @@ indataset = inframe.values
 outframe = pandas.read_csv("outdata.csv", header=None)
 outdataset = outframe.values
 
-
+print(indataset.shape)
+plt.waitforbuttonpress()
 
 print("done loading csv")
 # define base model
@@ -42,7 +44,7 @@ def baseline_model():
 	model.add(Conv2D(64, (5, 5), activation='relu'))
 	model.add(MaxPooling2D(pool_size=(2, 2)))
 	model.add(Flatten())
-	model.add(Dense(500, activation='relu'))
+	model.add(Dense(500, kernel_initializer='normal', activation='relu'))
 	model.add(Dense(50, kernel_initializer='normal', activation='relu'))
 	model.add(Dense(5, kernel_initializer='normal', activation='relu'))
 	model.add(Dense(1, kernel_initializer='normal'))
