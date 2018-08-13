@@ -16,7 +16,7 @@ from sklearn.model_selection import train_test_split
 import matplotlib.pylab as plt
 
 batch_size = 128
-epochs = 100
+epochs = 300
 
 img_x, img_y = 30, 30
 
@@ -102,8 +102,13 @@ model.fit(x_train, y_train,
 score = model.evaluate(x_test, y_test, verbose=0)
 print('Test loss:', score[0])
 print('Test accuracy:', score[1])
-
 plt.savefig("lossaccplot.png", dpi='figure')
+
+model_json = model.to_json()
+with open("convnet1.json", "w") as json_file:
+    json_file.write(model_json)
+model.save_weights("convnet1.h5")
+
 
 # fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
 # ax1.set_title('Losses')

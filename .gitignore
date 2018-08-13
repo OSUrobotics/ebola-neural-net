@@ -1,4 +1,6 @@
 variance_heatmap.npy
+indata.npy
+outdata.npy
 inputs.npy
 indata.csv
 outdata.csv
