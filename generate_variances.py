@@ -8,6 +8,7 @@ from PIL import Image
 #Packages to make life easier
 from tqdm import tqdm, trange
 import yaml, glob, pickle, sys
+from os import getcwd
 
 
 def interpolate_data(last_pt, pt, res, origin, num_pts):
@@ -39,7 +40,7 @@ def interpolate_data(last_pt, pt, res, origin, num_pts):
     return list(zip(x.astype(int), y))
 
 if __name__ == "__main__":
-    path = '/home/vilya/Desktop/ebola_final/'
+    path = getcwd() + '/../ebola_final/'
     data_path = path + 'etu_1_condensed/'
 
     step = 1
