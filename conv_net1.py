@@ -7,10 +7,10 @@ warnings.filterwarnings("ignore", message="numpy.ufunc size changed")
 
 import keras
 import numpy as np
-from keras.layers import Dense, Flatten
-from keras.layers import Conv2D, MaxPooling2D
-from keras.models import Sequential
-from keras.callbacks import History
+from keras.layers import *
+from keras.models import *
+from keras.optimizers import *
+from keras.callbacks import ModelCheckpoint, LearningRateScheduler
 from sklearn.model_selection import train_test_split
 import matplotlib.pylab as plt
 from unet_fork import *
@@ -28,24 +28,32 @@ seed=7
 np.random.seed(seed)
 x_train, x_test, y_train, y_test = train_test_split(in_data, out_data, test_size=.15, random_state=seed)
 
-model = unet(img_x, img_y, 1)
-# model = Sequential()
-# model.add(Conv2D(img_x, kernel_size=(10, 10), strides=(3, 3),
-#                  activation='relu',
-#                  input_shape=(img_x, img_y, 1)))
-# model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
-# model.add(Conv2D(64, (5, 5), activation='relu'))
-# model.add(MaxPooling2D(pool_size=(2, 2)))
-# model.add(Flatten())
-# # model.add(Dense(1000, activation='relu'))
-# model.add(Dense(500, kernel_initializer='normal', activation='relu'))
-# model.add(Dense(50, kernel_initializer='normal', activation='relu'))
-# model.add(Dense(5, kernel_initializer='normal', activation='relu'))
-# model.add(Dense(1, kernel_initializer='normal'))
-#
+# model = unet(img_x, img_y, 1)
+def cnn(img_x, img_y):
+    model = Sequential()
+    model.add(MaxPooling2D(pool_size=(4, 4), strides=(4, 4)))
+    model.add(Conv2D(64, kernel_size=(4, 4), strides=(2, 2),
+                     activation='relu',
+                     input_shape=(img_x, img_y, 1)))
+    model.add(Dropout(0.1))
+    # model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+    model.add(Conv2D(64, (2, 2), activation='relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(Flatten())
+    # model.add(Dense(1000, activation='relu'))
+    model.add(Dense(500, kernel_initializer='normal', activation='relu'))
+    # model.add(Dense(50, kernel_initializer='normal', activation='relu'))
+    # model.add(Dense(5, kernel_initializer='normal', activation='relu'))
+    model.add(Dense(1, kernel_initializer='normal'))
+    #
+    # model.summary()
+    return model
+
+model = cnn(img_x, img_y)
 model.compile(loss=keras.losses.mean_squared_logarithmic_error,
-              optimizer=keras.optimizers.Adam(),
-              metrics=['mse', 'mae'])
+# optimizer=keras.optimizers.Adam(lr = 1e-5),
+optimizer=keras.optimizers.SGD(nesterov=True)
+metrics=['mse', 'mae'])
 
 class liveHist(keras.callbacks.Callback):
     def on_train_begin(self, logs={}):

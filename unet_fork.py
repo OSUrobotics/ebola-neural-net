@@ -37,7 +37,7 @@ def unet (input_width, input_height, nChannels):
     model.add(Dropout(0.2))
     Concatenate(axis=-1)
     model.add(Conv2D(64, (3, 3), activation='relu', padding='same'))
-    # model.add(Dropout(0.2))
+    model.add(Dropout(0.2))
     # model.add(Conv2D(64, (3, 3), activation='relu', padding='same'))
     # Concatenate(axis=-1)
     # model.add(Conv2D(32, (3, 3), activation='relu', padding='same'))
