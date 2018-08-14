@@ -7,20 +7,20 @@ warnings.filterwarnings("ignore", message="numpy.ufunc size changed")
 
 import keras
 import numpy as np
-from keras.datasets import mnist
 from keras.layers import Dense, Flatten
 from keras.layers import Conv2D, MaxPooling2D
 from keras.models import Sequential
 from keras.callbacks import History
 from sklearn.model_selection import train_test_split
 import matplotlib.pylab as plt
+from unet_fork import *
 
-batch_size = 128
-epochs = 300
+batch_size = 10
+epochs = 200
 
-img_x, img_y = 30, 30
 
 in_data = np.load("indata.npy")
+img_x, img_y = in_data[0].shape
 in_data = in_data.reshape(in_data.shape[0], img_x, img_y, 1)
 out_data = np.load("outdata.npy")
 
@@ -28,20 +28,21 @@ seed=7
 np.random.seed(seed)
 x_train, x_test, y_train, y_test = train_test_split(in_data, out_data, test_size=.15, random_state=seed)
 
-model = Sequential()
-model.add(Conv2D(32, kernel_size=(5, 5), strides=(1, 1),
-                 activation='relu',
-                 input_shape=(img_x, img_y, 1)))
-model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
-model.add(Conv2D(64, (5, 5), activation='relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Flatten())
-model.add(Dense(1000, activation='relu'))
-model.add(Dense(500, kernel_initializer='normal', activation='relu'))
-model.add(Dense(50, kernel_initializer='normal', activation='relu'))
-model.add(Dense(5, kernel_initializer='normal', activation='relu'))
-model.add(Dense(1, kernel_initializer='normal'))
-
+model = unet(img_x, img_y, 1)
+# model = Sequential()
+# model.add(Conv2D(img_x, kernel_size=(10, 10), strides=(3, 3),
+#                  activation='relu',
+#                  input_shape=(img_x, img_y, 1)))
+# model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+# model.add(Conv2D(64, (5, 5), activation='relu'))
+# model.add(MaxPooling2D(pool_size=(2, 2)))
+# model.add(Flatten())
+# # model.add(Dense(1000, activation='relu'))
+# model.add(Dense(500, kernel_initializer='normal', activation='relu'))
+# model.add(Dense(50, kernel_initializer='normal', activation='relu'))
+# model.add(Dense(5, kernel_initializer='normal', activation='relu'))
+# model.add(Dense(1, kernel_initializer='normal'))
+#
 model.compile(loss=keras.losses.mean_squared_logarithmic_error,
               optimizer=keras.optimizers.Adam(),
               metrics=['mse', 'mae'])

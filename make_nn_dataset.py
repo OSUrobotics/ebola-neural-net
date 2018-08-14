@@ -14,15 +14,16 @@ def get_input_data(p, i, j, kernel_size, h, w):
 
     data = []
     for k in range(min_i, max_i):
-        data.append([])
-        for l in range(min_j, max_j):
-            # if k != i and l != j:
-            if k<0 or l<0 or k>=h or l>=w:
-                data[k-min_i].append(1)
-            elif p[k][l] >= 254:
-                data[k-min_i].append(0)
-            else:
-                data[k-min_i].append(1)
+        row = [1 if k<0 or l<0 or k>=h or l>=w or p[k][l] <254 else 0 for l in range(min_j, max_j)]
+        data.append(row)
+        # for l in range(min_j, max_j):
+        #     # if k != i and l != j:
+        #     if k<0 or l<0 or k>=h or l>=w:
+        #         data[k-min_i].append(1)
+        #     elif p[k][l] >= 254:
+        #         data[k-min_i].append(0)
+        #     else:
+        #         data[k-min_i].append(1)
 
     return np.array(data)
 
@@ -46,7 +47,7 @@ if __name__ == "__main__":
     outpath = results.outpath
 
     #Size of one side of the scanning window
-    kernel_size = 31
+    kernel_size = 61
 
     #get ordered lists of files
     infiles = sorted(glob.glob(inpath + '*'))
