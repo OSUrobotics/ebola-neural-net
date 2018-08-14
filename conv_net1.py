@@ -51,9 +51,9 @@ def cnn(img_x, img_y):
 
 model = cnn(img_x, img_y)
 model.compile(loss=keras.losses.mean_squared_logarithmic_error,
-# optimizer=keras.optimizers.Adam(lr = 1e-5),
-optimizer=keras.optimizers.SGD(nesterov=True)
-metrics=['mse', 'mae'])
+                # optimizer=keras.optimizers.Adam(lr = 1e-5),
+                optimizer=keras.optimizers.SGD(nesterov=True),
+                metrics=['mse', 'mae'])
 
 class liveHist(keras.callbacks.Callback):
     def on_train_begin(self, logs={}):

@@ -1,3 +1,5 @@
+input_prediction_points.npy
+indata_for_prediction.npy
 variance_heatmap.npy
 indata.npy
 outdata.npy
