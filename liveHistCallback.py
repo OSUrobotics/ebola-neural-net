@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
-
+import keras
+import matplotlib.pylab as plt
 
 class liveHist(keras.callbacks.Callback):
     def on_train_begin(self, logs={}):
@@ -47,7 +48,7 @@ class liveHist(keras.callbacks.Callback):
         self.ax2.legend(loc="upper right")
         self.ax3.plot(self.x, self.mae_acc, label="training", color='C0')
         self.ax3.plot(self.x, self.val_mae_acc, label="validation", color='C1')
-        self.ax2.legend(loc="upper right")
+        self.ax3.legend(loc="upper right")
 
         plt.pause(.01)
         plt.draw()

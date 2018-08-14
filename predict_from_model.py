@@ -22,8 +22,8 @@ import matplotlib.pylab as plt
 def get_input_data(p, i, j, kernel_size, h, w):
     min_i = int(i-(kernel_size-1)/2)
     max_i = int(i+(kernel_size-1)/2)
-    min_j = int(i-(kernel_size-1)/2)
-    max_j = int(i+(kernel_size-1)/2)
+    min_j = int(j-(kernel_size-1)/2)
+    max_j = int(j+(kernel_size-1)/2)
 
     data = []
     for k in range(min_i, max_i):

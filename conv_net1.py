@@ -14,10 +14,10 @@ from keras.callbacks import ModelCheckpoint, LearningRateScheduler
 from sklearn.model_selection import train_test_split
 import matplotlib.pylab as plt
 from unet_fork import *
-import liveHistCallback
+from liveHistCallback import *
 
 batch_size = 10
-epochs = 200
+epochs = 2000
 
 
 in_data = np.load("indata.npy")
