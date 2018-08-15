@@ -47,7 +47,8 @@ json_file.close()
 loaded_model = model_from_json(loaded_model_json)
 # load weights into new model
 loaded_model.load_weights("convnet1.h5")
-print("Loaded model from disk")
+
+loaded_model.summary()
 
 path = getcwd() + '/../ebola_final/'
 data_path = path + 'etu_1_condensed/'
