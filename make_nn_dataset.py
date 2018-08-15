@@ -16,25 +16,21 @@ def get_input_data(p, i, j, kernel_size, h, w):
     for k in range(min_i, max_i):
         row = [1 if k<0 or l<0 or k>=h or l>=w or p[k][l] <254 else 0 for l in range(min_j, max_j)]
         data.append(row)
-        # for l in range(min_j, max_j):
-        #     # if k != i and l != j:
-        #     if k<0 or l<0 or k>=h or l>=w:
-        #         data[k-min_i].append(1)
-        #     elif p[k][l] >= 254:
-        #         data[k-min_i].append(0)
-        #     else:
-        #         data[k-min_i].append(1)
 
     return np.array(data)
 
+def are_neighbors(output_data, i, j):
+    neighbor_list = [(i-1, j+1), (i, j+1), (i+1,j+1),
+                    (i-1, j),              (i+1, j),
+                    (i-1, j-1), (i, j-1), (i+1, j-1)]
+
+    for point in neighbor_list:
+        if output_data[point[0]][point[1]] != 0:
+            return True
+    return False
+
 if __name__ == "__main__":
     path = getcwd() + '/'
-
-    # open('indata.csv', 'w')
-    # indata = csv.writer(open('indata.csv', 'a'))
-    #
-    # open('outdata.csv', 'w')
-    # outdata = csv.writer(open('outdata.csv', 'a'))
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', action='store',default=path+'in_sage/',
@@ -60,21 +56,16 @@ if __name__ == "__main__":
         w, h = I.size
         p = np.asarray(I).astype('int')
 
-        output_im = Image.open(outfiles[i])
-        output_data = np.asarray(output_im)
-
-        input_data_len = kernel_size*kernel_size
+        output_data = np.load(outfiles[i])
 
         input_data = []
         output_list = []
 
         for i in trange(h, position=1):
             for j in range(w):
-                if p[i][j] >= 254 and output_data[i][j] != 0:
+                if p[i][j] >= 254 and (output_data[i][j] != 0 or are_neighbors(output_data, i, j)):
                     input_data.append(get_input_data(p, i, j, kernel_size, h, w))
                     output_list.append(output_data[i][j])
-                    # indata.writerow(get_input_data(p, i, j, kernel_size, h, w))
-                    # outdata.writerow([output_data[i][j]])
 
     np.save("indata",np.array(input_data))
     np.save("outdata", np.array(output_list))

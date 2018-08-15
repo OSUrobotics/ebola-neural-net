@@ -29,14 +29,6 @@ def get_input_data(p, i, j, kernel_size, h, w):
     for k in range(min_i, max_i):
         row = [1 if k<0 or l<0 or k>=h or l>=w or p[k][l] <254 else 0 for l in range(min_j, max_j)]
         data.append(row)
-        # for l in range(min_j, max_j):
-        #     # if k != i and l != j:
-        #     if k<0 or l<0 or k>=h or l>=w:
-        #         data[k-min_i].append(1)
-        #     elif p[k][l] >= 254:
-        #         data[k-min_i].append(0)
-        #     else:
-        #         data[k-min_i].append(1)
 
     return np.array(data)
 
@@ -69,13 +61,12 @@ for i in trange(h, position=1):
             in_data = in_data.reshape(1, img_x, img_y, 1)
             val = loaded_model.predict(in_data, verbose=0)
 
-            # if len(val) != 1:
-            # im[i][j] = val
-            if val[0][0] >= 0:
-            # tqdm.write("log val: " + str(val[0][0]))
+            if val[0][0] > 0:
                 im_log[i][j] = np.log(val[0][0])-1
 
-plt.imshow(im_log, cmap=plt.cm.Reds, interpolation='nearest')
+aoi = im_log[np.ix_(np.arange(1790,2400,1), np.arange(1620,2300,1))]
+plt.imsave("model_prediction.png", aoi, cmap=plt.cm.plasma)
+plt.imshow(aoi, cmap=plt.cm.plasma, interpolation='nearest')
 plt.show()
 
 # np.save("predicted_sim_data", im)

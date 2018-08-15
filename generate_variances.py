@@ -15,12 +15,12 @@ def interpolate_data(last_pt, pt, res, origin, num_pts):
     last_x = last_pt.position.x - origin[0]
     last_y = last_pt.position.y - origin[1]
     last_x_coord = int(last_x/res)
-    last_y_coord = im_h - int(last_y/res)
+    last_y_coord = h - int(last_y/res)
 
     x = pt.position.x - origin[0]
     y = pt.position.y - origin[1]
     x_coord = int(x/res)
-    y_coord = im_h - int(y/res)
+    y_coord = h - int(y/res)
 
     x = np.linspace(last_x_coord, x_coord, num_pts)
     if x_coord-last_x_coord != 0:
@@ -43,7 +43,6 @@ if __name__ == "__main__":
     path = getcwd() + '/../ebola_final/'
     data_path = path + 'etu_1_condensed/'
 
-    step = 1
     num_pts = 100
 
     map_params = yaml.load(open(path + 'map.yaml', 'rb'))
@@ -52,10 +51,9 @@ if __name__ == "__main__":
     I = Image.open(path + 'map.pgm')
     imarray = np.asarray(I).astype('int')
     w, h = I.size
-    im_w = int(w/step)
-    im_h = int(h/step)
-    im = np.zeros((im_w, im_h), dtype=int)
 
+    """
+    im = [[[] for k in range(w)] for i in range(h)]
 
     files = glob.glob(data_path + '*.p')
 
@@ -63,7 +61,7 @@ if __name__ == "__main__":
     #Generate heatmap
     for file in tqdm(files, position = 0):
         dataset = pickle.load(open(file, 'rb'))
-
+        pt_dict = {}
         for trial in dataset:
             if trial[0] == 4:
                 continue
@@ -74,7 +72,7 @@ if __name__ == "__main__":
                 x = point.position.x - origin[0]
                 y = point.position.y - origin[1]
                 x_coord = int(x/res)
-                y_coord = im_h - int(y/res)
+                y_coord = h - int(y/res)
 
                 if i == 0:
                     interpolated_data.append((x_coord, y_coord))
@@ -82,21 +80,48 @@ if __name__ == "__main__":
                 interpolated_data.extend(interpolate_data(trial[2][i-1], point, res, origin, num_pts))
 
             for point in interpolated_data:
-                im[point[1]][point[0]]+=1
+                if point in pt_dict.keys():
+                    pt_dict[point] += 1
+                else:
+                    pt_dict[point] = 1
 
+        for pt, val in pt_dict.items():
+            im[pt[1]][pt[0]].append(val)
+
+    np.save("time_in_cell", im)
+    # """
+
+    im = np.load("time_in_cell.npy")
+
+    tqdm.write("Getting means, medians, and standard deviations")
+    mean_data = np.zeros((w,h), dtype=int)
+    median_data = np.zeros((w,h), dtype=int)
+    std_data = np.zeros((w,h), dtype=int)
+    for i in trange(h):
+        for j in range(w):
+            if len(im[i][j]) != 0:
+                mean_data[i][j] = np.mean(im[i][j])
+                median_data[i][j] = np.median(im[i][j])
+                std_data[i][j] = np.std(im[i][j])
+
+    np.save("mean_heatmap", mean_data)
+    np.save("median_heatmap", median_data)
+    np.save("std_heatmap", std_data)
+
+    tqdm.write("Generating log-scaled images")
     #Create a version of the heatmap on a log scale
-    # im_log = np.zeros((im_w, im_h), dtype=int)
-    # for i in trange(im_h):
-    #     for j in range(im_w):
-    #         if im[i][j] != 0:
-    #             im_log[i][j] = np.log(im[i][j])
+    for i in trange(h):
+        for j in range(w):
+            if mean_data[i][j] > 0:
+                mean_data[i][j] = np.log(mean_data[i][j])
+                median_data[i][j] = np.log(median_data[i][j])
+            if std_data[i][j] > 0:
+                std_data[i][j] = np.log(std_data[i][j])
 
-    sys.path.remove('/opt/ros/kinetic/lib/python2.7/dist-packages')
-    from cv2 import imwrite
-    imwrite("variance_heatmap.pgm", im)
-    sys.path.append('/opt/ros/kinetic/lib/python2.7/dist-packages')
+    plt.imsave("mean_heatmap.png", mean_data, cmap=plt.cm.plasma)
+    plt.imsave("median_heatmap.png", median_data, cmap=plt.cm.plasma)
+    plt.imsave("std_heatmap.png", std_data, cmap=plt.cm.plasma)
 
-    np.save("variance_heatmap", im)
     # plt.imsave("heatmap_log", im_log, cmap=plt.cm.Reds)
     # plt.imshow(im_log, cmap=plt.cm.Reds, interpolation='nearest')
     # plt.show()
