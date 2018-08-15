@@ -10,7 +10,7 @@ from PIL import Image
 from keras.models import model_from_json
 import numpy as np
 from os import getcwd
-from tqdm import trange
+from tqdm import trange, tqdm
 import matplotlib.pylab as plt
 
 # in_data = np.load("indata_for_prediction.npy")
@@ -67,8 +67,12 @@ for i in trange(h, position=1):
             img_x, img_y = in_data.shape
             in_data = in_data.reshape(1, img_x, img_y, 1)
             val = loaded_model.predict(in_data, verbose=0)
+
+            # if len(val) != 1:
             # im[i][j] = val
-            im_log[i][j] = np.log(val)
+            if val[0][0] >= 0:
+            # tqdm.write("log val: " + str(val[0][0]))
+                im_log[i][j] = np.log(val[0][0])-1
 
 plt.imshow(im_log, cmap=plt.cm.Reds, interpolation='nearest')
 plt.show()
