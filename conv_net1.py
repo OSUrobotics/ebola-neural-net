@@ -17,7 +17,7 @@ from unet_fork import *
 from liveHistCallback import *
 
 batch_size = 10
-epochs = 200
+epochs = 75
 
 
 in_data = np.load("indata.npy")
@@ -34,11 +34,13 @@ def cnn(img_x, img_y):
     model = Sequential()
     model.add(MaxPooling2D(pool_size=(4, 4), strides=(4, 4)))
     model.add(Conv2D(64, kernel_size=(4, 4), strides=(2, 2),
-                     activation='relu',
-                     input_shape=(img_x, img_y, 1)))
+                     activation='relu'))
+    model.add(Dropout(0.1))
+    model.add(Conv2D(32, kernel_size=(2, 2), strides=(2, 2),
+                     activation='relu'))
     model.add(Dropout(0.1))
     # model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
-    model.add(Conv2D(64, (2, 2), activation='relu'))
+    model.add(Conv2D(32, (2, 2), activation='relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Flatten())
     # model.add(Dense(1000, activation='relu'))
@@ -54,7 +56,7 @@ model = cnn(img_x, img_y)
 model.compile(loss=keras.losses.mean_squared_logarithmic_error,
                 # optimizer=keras.optimizers.Adam(lr = 1e-5),
                 optimizer=keras.optimizers.SGD(nesterov=True),
-                metrics=['mse', 'mae', 'rmse'])
+                metrics=['mse', 'mae'])
 
 history = liveHist()
 
@@ -69,12 +71,12 @@ model.fit(x_train, y_train,
 score = model.evaluate(x_test, y_test, verbose=0)
 print('Test loss:', score[0])
 print('Test accuracy:', score[1])
-plt.savefig("lossaccplot_mean.png", dpi='figure')
+plt.savefig("lossaccplot_std.png", dpi='figure')
 
 model_json = model.to_json()
-with open("convnet1_mean.json", "w") as json_file:
+with open("convnet1_std.json", "w") as json_file:
     json_file.write(model_json)
-model.save_weights("convnet1_mean.h5")
+model.save_weights("convnet1_std.h5")
 
 
 # fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)

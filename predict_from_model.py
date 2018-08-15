@@ -33,12 +33,12 @@ def get_input_data(p, i, j, kernel_size, h, w):
     return np.array(data)
 
 # load json and create model
-json_file = open('convnet1.json', 'r')
+json_file = open('convnet1_std.json', 'r')
 loaded_model_json = json_file.read()
 json_file.close()
 loaded_model = model_from_json(loaded_model_json)
 # load weights into new model
-loaded_model.load_weights("convnet1.h5")
+loaded_model.load_weights("convnet1_std.h5")
 
 loaded_model.summary()
 
@@ -65,7 +65,7 @@ for i in trange(h, position=1):
                 im_log[i][j] = np.log(val[0][0])-1
 
 aoi = im_log[np.ix_(np.arange(1790,2400,1), np.arange(1620,2300,1))]
-plt.imsave("model_prediction.png", aoi, cmap=plt.cm.plasma)
+plt.imsave("model_prediction_std.png", aoi, cmap=plt.cm.plasma)
 plt.imshow(aoi, cmap=plt.cm.plasma, interpolation='nearest')
 plt.show()
 
