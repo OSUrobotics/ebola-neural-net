@@ -52,7 +52,7 @@ if __name__ == "__main__":
     imarray = np.asarray(I).astype('int')
     w, h = I.size
 
-    """
+    # """
     im = [[[] for k in range(w)] for i in range(h)]
 
     files = glob.glob(data_path + '*.p')
@@ -91,7 +91,7 @@ if __name__ == "__main__":
     np.save("time_in_cell", im)
     # """
 
-    im = np.load("time_in_cell.npy")
+    # im = np.load("time_in_cell.npy")
 
     tqdm.write("Getting means, medians, and standard deviations")
     mean_data = np.zeros((w,h), dtype=int)
