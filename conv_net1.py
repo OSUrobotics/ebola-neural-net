@@ -5,7 +5,7 @@ import warnings
 warnings.filterwarnings("ignore", message="numpy.dtype size changed")
 warnings.filterwarnings("ignore", message="numpy.ufunc size changed")
 
-import keras
+import keras, animation
 import numpy as np
 from keras.layers import *
 from keras.models import *
@@ -19,11 +19,13 @@ from liveHistCallback import *
 batch_size = 10
 epochs = 75
 
-
+wait = animation.Wait('spinner', text = 'Loading data\n')
+wait.start()
 in_data = np.load("indata.npy")
 img_x, img_y = in_data[0].shape
 in_data = in_data.reshape(in_data.shape[0], img_x, img_y, 1)
 out_data = np.load("outdata.npy")
+wait.stop()
 
 seed=7
 np.random.seed(seed)
@@ -32,7 +34,7 @@ x_train, x_test, y_train, y_test = train_test_split(in_data, out_data, test_size
 # model = unet(img_x, img_y, 1)
 def cnn(img_x, img_y):
     model = Sequential()
-    model.add(MaxPooling2D(pool_size=(4, 4), strides=(4, 4)))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Conv2D(64, kernel_size=(4, 4), strides=(2, 2),
                      activation='relu'))
     model.add(Dropout(0.1))
