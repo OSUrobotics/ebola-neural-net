@@ -110,7 +110,7 @@ if __name__ == "__main__":
 
     tqdm.write("Generating log-scaled images")
     #Create a version of the heatmap on a log scale
-    for i in trange(h):
+    for i in trange(h, position=0, smoothing=.9):
         for j in range(w):
             if mean_data[i][j] > 0:
                 mean_data[i][j] = np.log(mean_data[i][j])

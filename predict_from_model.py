@@ -15,6 +15,7 @@ from skimage.measure import block_reduce
 import matplotlib.pylab as plt
 
 def log_im(im):
+    w, h= im.shape
     new = np.zeros(im.shape, dtype=float)
     for i in range(w):
         for j in range(h):
@@ -72,6 +73,7 @@ for i in trange(h, position=0, smoothing=.9):
 
 
 np.save("std_prediction_mit_2011-01-18-06-37-58", im)
-plt.imsave("model_prediction_std_mit_2011-01-18-06-37-58.png", log_im(im), cmap=plt.cm.plasma)
-plt.imshow(aoi, cmap=plt.cm.plasma, interpolation='nearest')
+log = log_im(im)
+plt.imsave("model_prediction_std_mit_2011-01-18-06-37-58.png", log, cmap=plt.cm.plasma)
+plt.imshow(log, cmap=plt.cm.plasma, interpolation='nearest')
 plt.show()

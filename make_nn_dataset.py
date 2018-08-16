@@ -57,7 +57,7 @@ if __name__ == "__main__":
     print(infiles)
     assert len(infiles) == len(outfiles), "Mismatched number of files"
 
-    for i in trange(len(infiles), position=0):
+    for i in trange(len(infiles), position=0, smoothing=.9):
         I = Image.open(infiles[i])
         w, h = I.size
         p = np.asarray(I).astype('int')
@@ -67,7 +67,7 @@ if __name__ == "__main__":
         input_data = []
         output_list = []
 
-        for i in trange(h, position=1):
+        for i in trange(h, position=1, smoothing=.9):
             for j in range(w):
                 if p[i][j] >= 254 and (output_data[i][j] != 0 or are_neighbors(output_data, i, j)):
                     input_data.append(get_input_data(p, i, j, kernel_size, h, w))
