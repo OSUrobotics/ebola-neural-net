@@ -1,4 +1,6 @@
 input_prediction_points.npy
+std_prediction.npy
+std_prediction_log.npy
 mean_heatmap.npy
 median_heatmap.npy
 std_heatmap.npy

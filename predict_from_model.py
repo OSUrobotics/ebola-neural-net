@@ -5,7 +5,7 @@ import warnings
 warnings.filterwarnings("ignore", message="numpy.dtype size changed")
 warnings.filterwarnings("ignore", message="numpy.ufunc size changed")
 
-import keras
+import keras, argparse
 from PIL import Image
 from keras.models import model_from_json
 import numpy as np
@@ -14,11 +14,13 @@ from tqdm import trange, tqdm
 from skimage.measure import block_reduce
 import matplotlib.pylab as plt
 
-# in_data = np.load("indata_for_prediction.npy")
-# img_x, img_y = in_data[0].shape
-# in_data = in_data.reshape(in_data.shape[0], img_x, img_y, 1)
-#
-# input_points = np.load("input_prediction_points.npy")
+def log_im(im):
+    new = np.zeros(im.shape, dtype=float)
+    for i in range(w):
+        for j in range(h):
+            if im[i][j] > 0:
+                new[i][j] = np.log(im[i][j])
+    return new
 
 def get_input_data(p, i, j, kernel_size, h, w):
     min_i = int(i-(kernel_size)/2)
@@ -44,18 +46,20 @@ loaded_model.load_weights("convnet1_std.h5")
 
 loaded_model.summary()
 
-path = getcwd() + '/../ebola_final/'
-data_path = path + 'etu_1_condensed/'
+parser = argparse.ArgumentParser()
+parser.add_argument('-i', action='store',default='map.pgm',
+                    dest='filename', help="set the input data folder")
 
-I = Image.open(path + 'map.pgm')
+filename = parser.parse_args().filename
+
+I = Image.open(filename)
 p = np.asarray(I).astype('int')
 w, h = I.size
 im = np.zeros((w, h), dtype=int)
-im_log = np.zeros((w, h), dtype=int)
 
 kernel_size = 128
 
-for i in trange(h, position=1):
+for i in trange(h, position=0, smoothing=.9):
     for j in range(w):
         if p[i][j] >= 254:
             in_data = get_input_data(p, i, j, kernel_size, h, w)
@@ -65,13 +69,9 @@ for i in trange(h, position=1):
 
             if val[0][0] > 0:
                 im[i][j] = val[0][0]
-                im_log[i][j] = np.log(val[0][0])
 
-np.save("std_prediction", im)
-np.save("std_prediction_log", im_log)
-aoi = im_log[np.ix_(np.arange(1790,2400,1), np.arange(1620,2300,1))]
-plt.imsave("model_prediction_std.png", aoi, cmap=plt.cm.plasma)
+
+np.save("std_prediction_mit_2011-01-18-06-37-58", im)
+plt.imsave("model_prediction_std_mit_2011-01-18-06-37-58.png", log_im(im), cmap=plt.cm.plasma)
 plt.imshow(aoi, cmap=plt.cm.plasma, interpolation='nearest')
 plt.show()
-
-# np.save("predicted_sim_data", im)
