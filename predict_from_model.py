@@ -60,7 +60,7 @@ im = np.zeros((w, h), dtype=int)
 
 kernel_size = 128
 
-for i in trange(h, position=0, smoothing=.9):
+for i in trange(h, position=0, smoothing=1):
     for j in range(w):
         if p[i][j] >= 254:
             in_data = get_input_data(p, i, j, kernel_size, h, w)
